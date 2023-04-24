@@ -131,8 +131,8 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #define AP_PROFILE_PATH                 "/ramdisk/etc/Wireless/RT2870AP/RT2870AP.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME "/ramdisk/etc/Wireless/RT2870AP/RT2870AP.bin"
 #else
-//#define AP_PROFILE_PATH			"/etc/Wireless/RT2870AP/RT2870AP.dat"
-#define AP_PROFILE_PATH			"/morse/ap_2g/RT2870AP.dat"
+#define AP_PROFILE_PATH			"/etc/Wireless/RT2870AP/RT2870AP.dat"
+//#define AP_PROFILE_PATH			"/morse/ap_2g/RT2870AP.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME "/etc/Wireless/RT2870AP/RT2870AP.bin"
 #endif
 #define AP_NIC_DEVICE_NAME			"RT2870AP"
