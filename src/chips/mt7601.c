@@ -1437,7 +1437,7 @@ NTSTATUS MT7601DisableTxRx(
 	UINT32 MaxRetry;
 
 	if (!IS_MT7601(pAd))
-		return;
+		return STATUS_UNSUCCESSFUL;
 
 	DBGPRINT(RT_DEBUG_TRACE, ("----> %s\n", __FUNCTION__));
 

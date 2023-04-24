@@ -1,8 +1,8 @@
 # Support ATE function
-HAS_ATE=y
+HAS_ATE=n
 
 # Support QA ATE function
-HAS_QA_SUPPORT=y
+HAS_QA_SUPPORT=n
 
 HAS_RSSI_FEEDBACK=n
 
@@ -10,10 +10,10 @@ HAS_RSSI_FEEDBACK=n
 HAS_XLINK=n
 
 # Support WSC function
-HAS_WSC=y
-HAS_WSC_V2=y
+HAS_WSC=n
+HAS_WSC_V2=n
 HAS_WSC_LED=n
-HAS_IWSC_SUPPORT=y
+HAS_IWSC_SUPPORT=n
 
 
 # Support LLTD function
@@ -25,12 +25,12 @@ HAS_APCLI=n
 
 # Support Wpa_Supplicant
 # i.e. wpa_supplicant -Dralink
-HAS_WPA_SUPPLICANT=y
+HAS_WPA_SUPPLICANT=n
 
 
 # Support Native WpaSupplicant for Network Maganger
 # i.e. wpa_supplicant -Dwext
-HAS_NATIVE_WPA_SUPPLICANT_SUPPORT=y
+HAS_NATIVE_WPA_SUPPLICANT_SUPPORT=n
 
 #Support Net interface block while Tx-Sw queue full
 HAS_BLOCK_NET_IF=n
@@ -147,7 +147,7 @@ HAS_BGFP_SUPPORT=n
 HAS_BGFP_OPEN_SUPPORT=n
 
 # Support HOSTAPD function
-HAS_HOSTAPD_SUPPORT=y
+HAS_HOSTAPD_SUPPORT=n
 
 #Support GreenAP function
 HAS_GREENAP_SUPPORT=n

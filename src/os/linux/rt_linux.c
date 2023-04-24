@@ -31,6 +31,10 @@
 #define RTMP_MODULE_OS
 #define RTMP_MODULE_OS_UTIL
 
+#include <linux/module.h> 
+#include <linux/init.h> 
+#include <linux/fs.h> 
+#include <linux/uaccess.h> 
 
 #include "rtmp_comm.h"
 #include "rtmp_osabl.h"
@@ -120,9 +124,10 @@ static inline VOID __RTMP_OS_Init_Timer(
 	IN PVOID data)
 {
 	if (!timer_pending(pTimer)) {
-		init_timer(pTimer);
+		/*init_timer(pTimer);
 		pTimer->data = (unsigned long)data;
-		pTimer->function = function;
+		pTimer->function = function;*/
+		timer_setup(pTimer, function, 0);
 	}
 }
 
@@ -1161,13 +1166,13 @@ void RtmpOSFileSeek(RTMP_OS_FD osfd, int offset)
 
 int RtmpOSFileRead(RTMP_OS_FD osfd, char *pDataPtr, int readLen)
 {
-	/* The object must have a read method */
-	if (osfd->f_op && osfd->f_op->read) {
-		return osfd->f_op->read(osfd, pDataPtr, readLen, &osfd->f_pos);
-	} else {
-		DBGPRINT(RT_DEBUG_ERROR, ("no file read method\n"));
-		return -1;
-	}
+	int ret = 0;
+	mm_segment_t fs;
+	fs = get_fs();
+	set_fs(KERNEL_DS);
+	ret = kernel_read(osfd, pDataPtr, readLen, &osfd->f_pos);
+	set_fs(fs);
+	return ret;
 }
 
 int RtmpOSFileWrite(RTMP_OS_FD osfd, char *pDataPtr, int writeLen)
@@ -1185,8 +1190,10 @@ static inline void __RtmpOSFSInfoChange(OS_FS_INFO * pOSFSInfo, BOOLEAN bSet)
 		pOSFSInfo->fsgid = current->fsgid;
 		current->fsuid = current->fsgid = 0;
 #else
-		pOSFSInfo->fsuid = *(int*)&current_fsuid();
-		pOSFSInfo->fsgid = *(int*)&current_fsgid();
+		//pOSFSInfo->fsuid = *(int*)&current_fsuid();
+		//pOSFSInfo->fsgid = *(int*)&current_fsgid();
+		pOSFSInfo->fsuid = current_fsuid().val;
+		pOSFSInfo->fsgid = current_fsgid().val;
 #endif
 		pOSFSInfo->fs = get_fs();
 		set_fs(KERNEL_DS);
@@ -2174,7 +2181,7 @@ VOID RtmpDrvAllRFPrint(
 		if (file_w->f_op && file_w->f_op->write) {
 			file_w->f_pos = 0;
 			/* write data to file */
-			file_w->f_op->write(file_w, pBuf, BufLen, &file_w->f_pos);
+			file_w->f_op->write(file_w, (char *)pBuf, BufLen, &file_w->f_pos);
 		}
 		filp_close(file_w, NULL);
 	}
@@ -4314,7 +4321,7 @@ VOID RtmpOsFreeSpinLock(NDIS_SPIN_LOCK *pLockOrg)
 	/* we will free all locks memory in RTMP_OS_FREE_LOCK() */
 	OS_NDIS_SPIN_LOCK *pLock;
 
-	pLock = (OS_NDIS_MINIPORT_TIMER *) (pLockOrg->pContent);
+	pLock = (OS_NDIS_SPIN_LOCK *) (pLockOrg->pContent);
 	if (pLock != NULL) {
 		OS_NdisFreeSpinLock(pLock);
 

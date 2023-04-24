@@ -17,7 +17,7 @@ endif
 MODULE = $(word 1, $(CHIPSET))
 
 #OS ABL - YES or NO
-OSABL = YES
+OSABL = NO
 
 ifneq ($(TARGET),THREADX)
 #RT28xx_DIR = home directory of RT28xx source code
@@ -191,12 +191,8 @@ CROSS_COMPILE = mips-wrs-linux-gnu-
 endif
 
 ifeq ($(PLATFORM),PC)
-# Linux 2.6
-LINUX_SRC = /lib/modules/$(shell uname -r)/build
-# Linux 2.4 Change to your local setting
-#LINUX_SRC = /usr/src/linux-2.4
-LINUX_SRC_MODULE = /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless/
-CROSS_COMPILE = 
+CROSS_COMPILE = aarch64-buildroot-linux-gnu-
+LINUX_SRC = /home/tyson/projects/quectel/BPI-R2PRO-BSP-5.10.x/kernel 
 endif
 
 ifeq ($(PLATFORM),INTELP6)
@@ -387,7 +383,7 @@ else
 ifeq ($(PLATFORM),FREESCALE8377)
 	$(MAKE) ARCH=powerpc CROSS_COMPILE=$(CROSS_COMPILE) -C  $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
 else
-	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
+	$(MAKE) ARCH=arm64 CROSS_COMPILE=aarch64-buildroot-linux-gnu- -C $(LINUX_SRC) M=$(RT28xx_DIR)/os/linux modules
 endif
 endif
 
@@ -398,7 +394,7 @@ endif
 
 ifeq ($(RT28xx_MODE),AP)
 ifneq ($(findstring 7601,$(CHIPSET)),)
-	cp -f $(RT28xx_DIR)/os/linux/mt$(MODULE)ap.ko /tftpboot
+	#cp -f $(RT28xx_DIR)/os/linux/mt$(MODULE)ap.ko /tftpboot
 else
 	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)ap.ko /tftpboot
 endif
@@ -406,8 +402,8 @@ ifeq ($(OSABL),YES)
 	cp -f $(RT28xx_DIR)/os/linux/rtutil$(MODULE)ap.ko /tftpboot
 	cp -f $(RT28xx_DIR)/os/linux/rtnet$(MODULE)ap.ko /tftpboot
 endif
-	rm -f os/linux/rt$(MODULE)ap.ko.lzma
-	/root/bin/lzma e os/linux/rt$(MODULE)ap.ko os/linux/rt$(MODULE)ap.ko.lzma
+	#rm -f os/linux/rt$(MODULE)ap.ko.lzma
+	#/root/bin/lzma e os/linux/rt$(MODULE)ap.ko os/linux/rt$(MODULE)ap.ko.lzma
 else	
 ifeq ($(RT28xx_MODE),APSTA)
 	cp -f $(RT28xx_DIR)/os/linux/rt$(MODULE)apsta.ko /tftpboot
@@ -529,7 +525,7 @@ ifneq (,$(findstring 2.4,$(LINUX_SRC)))
 	$(MAKE) -C $(RT28xx_DIR)/os/linux/
 else
 	cp -f os/linux/Makefile.6 $(RT28xx_DIR)/os/linux/Makefile
-	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
+	$(MAKE) ARCH=arm64 CROSS_COMPILE=aarch64-buildroot-linux-gnu- -C $(LINUX_SRC) M=$(RT28xx_DIR)/os/linux modules
 endif
 
 # Declare the contents of the .PHONY variable as phony.  We keep that information in a variable

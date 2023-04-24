@@ -131,7 +131,8 @@ typedef struct usb_ctrlrequest devctrlrequest;
 #define AP_PROFILE_PATH                 "/ramdisk/etc/Wireless/RT2870AP/RT2870AP.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME "/ramdisk/etc/Wireless/RT2870AP/RT2870AP.bin"
 #else
-#define AP_PROFILE_PATH			"/etc/Wireless/RT2870AP/RT2870AP.dat"
+//#define AP_PROFILE_PATH			"/etc/Wireless/RT2870AP/RT2870AP.dat"
+#define AP_PROFILE_PATH			"/morse/ap_2g/RT2870AP.dat"
 #define AP_RTMP_FIRMWARE_FILE_NAME "/etc/Wireless/RT2870AP/RT2870AP.bin"
 #endif
 #define AP_NIC_DEVICE_NAME			"RT2870AP"
@@ -521,7 +522,9 @@ do { \
 #define	THREAD_PID_INIT_VALUE	NULL
 /* TODO: Use this IOCTL carefully when linux kernel version larger than 2.6.27, because the PID only correct when the user space task do this ioctl itself. */
 /*#define RTMP_GET_OS_PID(_x, _y)    _x = get_task_pid(current, PIDTYPE_PID); */
-#define RT_GET_OS_PID(_x, _y)		do{rcu_read_lock(); _x=(ULONG)current->pids[PIDTYPE_PID].pid; rcu_read_unlock();}while(0)
+//#define RT_GET_OS_PID(_x, _y)		do{rcu_read_lock(); _x=(ULONG)current->pids[PIDTYPE_PID].pid; rcu_read_unlock();}while(0)
+#define RT_GET_OS_PID(_x, _y) _x = get_task_pid(current, PIDTYPE_PID);
+
 #ifdef OS_ABL_FUNC_SUPPORT
 #define RTMP_GET_OS_PID(_a, _b)			RtmpOsGetPid(&_a, _b)
 #else
@@ -561,7 +564,8 @@ typedef struct tasklet_struct  *POS_NET_TASK_STRUCT;
 typedef struct timer_list	OS_NDIS_MINIPORT_TIMER;
 typedef struct timer_list	OS_TIMER;
 
-typedef void (*TIMER_FUNCTION)(unsigned long);
+//typedef void (*TIMER_FUNCTION)(unsigned long);
+typedef void (*TIMER_FUNCTION)(struct timer_list *);
 
 
 #define OS_WAIT(_time) \
